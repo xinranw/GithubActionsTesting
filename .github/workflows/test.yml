@@ -9,21 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/test-release-branch-workflow')
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      - id: get_branch_name
+        run: echo ::set-output name=branch::$(gh pr view $PR_NUMBER --repo $REPO --json headRefName --jq '.headRefName')
+        env:
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          PR_BRANCH="${{ github.event.issue.pull_request.head.ref }}"
-          echo "Current branch is $PR_BRANCH"
-      
       - name: Verify release branch
         id: verify_release_branch
+        env:
+          PR_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
         run: |
           echo $
-          if [[ "$pr_branch" != "release/"* ]]; then
+          if [[ "$PR_BRANCH" != "release/"* ]]; then
             echo "This workflow only runs for release branches. Stopping the workflow..."
             exit 1
           fi
