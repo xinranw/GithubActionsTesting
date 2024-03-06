@@ -4,7 +4,6 @@ on:
   issue_comment:
     types: [created]
 
-
 jobs:
   merge-release-branch:
     runs-on: ubuntu-latest
@@ -18,37 +17,3 @@ jobs:
         run: |
           echo Is PR $IS_PR ref $GITHUB_REF comment body $COMMENT_BODY
 
-
-      # - uses: actions/checkout@v3
-      #   with:
-      #     fetch-depth: 0
-
-      # - name: Extract branch name
-      #   shell: bash
-      #   run: |
-      #     echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      #     echo $GITHUB_OUTPUT
-      #   id: extract_branch
-
-
-      # - name: Wait for Pull Request CI workflow to finish and pass
-      #   uses: lewagon/wait-on-check-action@v1.3.3
-      #   with:
-      #     ref: ${{ github.ref }}
-      #     check-name: 'Run CI actions'
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     wait-interval: 10
-
-      # # Do a ff-only merge from the release branch into master
-      # # Push changes from the release branch into master
-      # # This also automatically closes the release branch PR
-      # - name: Merge to master ff_only
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     git fetch origin master
-      #     git fetch origin ${{ steps.extract_branch.outputs.branch }}
-      #     git checkout master
-      #     git pull --rebase
-      #     git merge ${{ steps.extract_branch.outputs.branch }} --ff-only --allow-unrelated-histories
-      #     git push origin master
