@@ -12,5 +12,7 @@ jobs:
       - name: Debug script
         run: |
             IS_PR="${{ github.event.issue.pull_request }}"
-            echo Is PR $IS_PR ref $GITHUB_REF comment body $COMMENT_BODY
+            GH_REF="${{ github.ref }}"
+            COMMENT_BODY="${{ github.event.comment.body }}"
+            echo Is PR $IS_PR ref $GH_REF comment body $COMMENT_BODY $GITHUB_EVENT_EVENT_COMMENT_BODY
 
