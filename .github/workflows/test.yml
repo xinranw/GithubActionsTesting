@@ -16,14 +16,15 @@ jobs:
       - name: Extract branch name
         id: extract_branch
         run: |
-          PR_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          PR_BRANCH="${{ github.event.issue.pull_request.head.ref }}"
           echo "Current branch is $PR_BRANCH"
       
       - name: Verify release branch
         id: verify_release_branch
         run: |
+          echo $
           if [[ "$pr_branch" != "release/"* ]]; then
-            echo "This is not a release branch. Stopping the workflow..."
+            echo "This workflow only runs for release branches. Stopping the workflow..."
             exit 1
           fi
 
