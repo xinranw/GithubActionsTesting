@@ -14,13 +14,13 @@ jobs:
           fetch-depth: 0
 
       - name: Extract branch name
-        shell: bash
+        id: extract_branch
         run: |
-          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
-          id: extract_branch
+          PR_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}
+          echo "Current branch is $PR_BRANCH"
       
       - name: Verify release branch
+        id: verify_release_branch
         run: |
           if [[ "$pr_branch" != "release/"* ]]; then
             echo "This is not a release branch. Stopping the workflow..."
