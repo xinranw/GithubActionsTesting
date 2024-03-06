@@ -10,7 +10,7 @@ jobs:
     if: github.event.issue.pull_request && contains(github.event.comment.body, '/test-release-branch-workflow')
     steps:
       - id: get_branch_name
-        run: echo ::set-output name=branch::$(gh pr view $PR_NUMBER --repo $REPO --json headRefName --jq '.headRefName')
+        run: echo "branch=$(gh pr view $PR_NUMBER --repo $REPO --json headRefName --jq '.headRefName')" >> $GITHUB_OUTPUT
         env:
           REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.issue.number }}
