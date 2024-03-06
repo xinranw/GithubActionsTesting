@@ -10,8 +10,7 @@ jobs:
     if: contains(github.event.comment.body, '/test-release-branch-workflow')
     steps:
       - name: Debug script
-        env:
-          IS_PR: ${{ github.event.issue.pull_request }}
         run: |
-          echo Is PR $IS_PR ref $GITHUB_REF comment body $COMMENT_BODY
+            IS_PR="${{ github.event.issue.pull_request }}"
+            echo Is PR $IS_PR ref $GITHUB_REF comment body $COMMENT_BODY
 
