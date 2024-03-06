@@ -7,12 +7,30 @@ on:
 jobs:
   merge-release-branch:
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'release/') && contains(github.event.comment.body, '/test-release-branch-workflow')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/test-release-branch-workflow')
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Extract branch name
+        shell: bash
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo $GITHUB_OUTPUT
+          id: extract_branch
+      
+      - name: Verify release branch
+        run: |
+          if [[ "$pr_branch" != "release/"* ]]; then
+            echo "This is not a release branch. Stopping the workflow..."
+            exit 1
+          fi
+
       - name: Debug script
         run: |
-            IS_PR="${{ github.event.issue.pull_request }}"
-            GH_REF="${{ github.ref }}"
-            COMMENT_BODY="${{ github.event.comment.body }}"
-            echo Is PR $IS_PR ref $GH_REF comment body $COMMENT_BODY
+          IS_PR="${{ github.event.issue.pull_request }}"
+          GH_REF="${{ github.ref }}"
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          echo Is PR $IS_PR ref $GH_REF comment body $COMMENT_BODY
 
