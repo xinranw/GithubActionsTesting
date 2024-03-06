@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Debug script
         env:
-          IS_PR: ${{ github.event.issue.pull_request }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
+          IS_PR: "${{ github.event.issue.pull_request }}"
+          COMMENT_BODY: "${{ github.event.comment.body }}"
         run: |
           echo Is PR $IS_PR ref $GITHUB_REF comment body $COMMENT_BODY
 
