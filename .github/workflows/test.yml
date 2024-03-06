@@ -21,7 +21,7 @@ jobs:
         env:
           PR_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
         run: |
-          echo $
+          echo Current branch: $PR_BRANCH
           if [[ "$PR_BRANCH" != "release/"* ]]; then
             echo "This workflow only runs for release branches. Stopping the workflow..."
             exit 1
