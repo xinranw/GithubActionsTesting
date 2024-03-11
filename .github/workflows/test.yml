@@ -7,9 +7,11 @@ on:
 jobs:
   merge-release-branch:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '/test-release-branch-workflow')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/release-branch-workflow')
     steps:
-      - id: get_branch_name
+      # see https://github.com/actions/checkout/issues/331#issuecomment-1035525003
+      - name: Extract branch name
+        id: extract_branch
         run: echo "branch=$(gh pr view $PR_NUMBER --repo $REPO --json headRefName --jq '.headRefName')" >> $GITHUB_OUTPUT
         env:
           REPO: ${{ github.repository }}
@@ -19,7 +21,7 @@ jobs:
       - name: Verify release branch
         id: verify_release_branch
         env:
-          PR_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
+          PR_BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
           echo Current branch: $PR_BRANCH
           if [[ "$PR_BRANCH" != "release/"* ]]; then
@@ -27,10 +29,25 @@ jobs:
             exit 1
           fi
 
-      - name: Debug script
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+  
+      # Do a ff-only merge from the release branch into master
+      # Push changes from the release branch into master
+      # This also automatically closes the release branch PR
+      - name: Merge to main ff_only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: ${{ steps.extract_branch.outputs.branch }}
         run: |
-          IS_PR="${{ github.event.issue.pull_request }}"
-          GH_REF="${{ github.ref }}"
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          echo Is PR $IS_PR ref $GH_REF comment body $COMMENT_BODY
+          git fetch origin main
+          git fetch origin $PR_BRANCH
+          git checkout $PR_branch
+          git pull
+          git checkout main
+          git pull --rebase
+          git merge $PR_BRANCH --ff-only --allow-unrelated-histories
+          git push origin main
+
 
