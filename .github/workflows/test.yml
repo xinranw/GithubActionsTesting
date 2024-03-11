@@ -44,10 +44,10 @@ jobs:
           git fetch origin main
           git fetch origin $PR_BRANCH
           git checkout $PR_branch
-          git pull
           git checkout main
           git pull --rebase
           git merge $PR_BRANCH --ff-only --allow-unrelated-histories
           git push origin main
+        shell: bash
 
 
