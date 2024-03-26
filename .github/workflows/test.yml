@@ -18,16 +18,16 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Verify release branch
-      #   id: verify_release_branch
-      #   env:
-      #     PR_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-      #   run: |
-      #     echo Current branch: $PR_BRANCH
-      #     if [[ "$PR_BRANCH" != "release/"* ]]; then
-      #       echo "This workflow only runs for release branches. Stopping the workflow..."
-      #       exit 1
-      #     fi
+      - name: Verify release branch
+        id: verify_release_branch
+        env:
+          PR_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+        run: |
+          echo Current branch: $PR_BRANCH
+          if [[ "$PR_BRANCH" != "release/"* ]]; then
+            echo "This workflow only runs for release branches. Stopping the workflow..."
+            exit 1
+          fi
 
       - uses: actions/checkout@v3
         with:
