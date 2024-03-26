@@ -46,7 +46,7 @@ jobs:
           git checkout $PR_branch
           git checkout main
           git pull --rebase
-          git merge $PR_BRANCH --ff-only --allow-unrelated-histories
+          git merge origin/$PR_BRANCH --ff-only --allow-unrelated-histories
           git push origin main
         shell: bash
 
